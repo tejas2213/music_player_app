@@ -26,12 +26,14 @@ class _HomeScreenState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Music Player'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_rounded),
             onPressed: () {
               context.read<SongBloc>().add(RefreshSongs());
             },
@@ -46,10 +48,7 @@ class _HomeScreenState extends State<HomeView> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search songs...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
               ),
               onChanged: (value) {
                 context.read<SongBloc>().add(SearchSongs(value));

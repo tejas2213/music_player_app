@@ -11,16 +11,18 @@ class NowPlayingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Now Playing'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.lyrics),
+            icon: const Icon(Icons.lyrics_rounded),
             onPressed: () => context.push('/lyrics'),
           ),
         ],
@@ -35,49 +37,75 @@ class NowPlayingView extends StatelessWidget {
               );
             }
 
-            return Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (albumArtBytes != null)
-                          Image.memory(
-                            albumArtBytes,
-                            width: 160,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          )
-                        else
-                          CircleAvatar(
-                            radius: 80,
-                            backgroundColor: Colors.grey[300],
-                            child: const Icon(
-                              Icons.music_note,
-                              size: 60,
-                              color: Colors.black54,
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    scheme.primary.withOpacity(0.10),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (albumArtBytes != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.memory(
+                                albumArtBytes,
+                                width: 220,
+                                height: 220,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          else
+                            CircleAvatar(
+                              radius: 110,
+                              backgroundColor: theme.brightness == Brightness.dark
+                                  ? const Color(0xFF1F1F25)
+                                  : const Color(0xFFE9E8EF),
+                              child: const Icon(
+                                Icons.music_note,
+                                size: 80,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              children: [
+                                Text(
+                                  state.currentSong.title,
+                                  style: theme.textTheme.titleLarge,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  state.currentSong.artist,
+                                  style: theme.textTheme.titleMedium,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
                             ),
                           ),
-                        const SizedBox(height: 20),
-                        Text(
-                          state.currentSong.title,
-                          style: Theme.of(context).textTheme.titleLarge,
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          state.currentSong.artist,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SeekBar(),
-                const PlayerControls(),
-                const SizedBox(height: 20),
-              ],
+                  const SeekBar(),
+                  const SizedBox(height: 8),
+                  const PlayerControls(),
+                  const SizedBox(height: 20),
+                ],
+              ),
             );
           }
           return const Center(child: Text('No song playing'));

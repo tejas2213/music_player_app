@@ -19,15 +19,18 @@ class SeekBar extends StatelessWidget {
         if (state is PlayerPlaying) {
           return Column(
             children: [
-              Slider(
-                value: state.position.inSeconds.toDouble(),
-                min: 0,
-                max: state.duration.inSeconds.toDouble(),
-                onChanged: (value) {
-                  context.read<PlayerBloc>().add(
-                    SeekTo(Duration(seconds: value.toInt())),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Slider(
+                  value: state.position.inSeconds.clamp(0, state.duration.inSeconds).toDouble(),
+                  min: 0,
+                  max: state.duration.inSeconds.toDouble().clamp(0.0, double.infinity),
+                  onChanged: (value) {
+                    context.read<PlayerBloc>().add(
+                      SeekTo(Duration(seconds: value.toInt())),
+                    );
+                  },
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
